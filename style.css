@@ -1,0 +1,9 @@
+/*Selecciona todos los elementos <canvas> en el documento HTML.*/
+canvas {
+    /*Establece el ancho del lienzo (canvas) en 500 píxeles.*/ 
+    width: 500px;
+    /*Establece la altura del lienzo (canvas) en 500 píxeles.*/
+    height: 500px;
+    /*Establece el color de fondo del lienzo (canvas) en un tono oscuro de negro (#0D0909)*/
+    background-color: #0D0909;
+} 

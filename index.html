@@ -1,0 +1,104 @@
+<!--Declara la versión de HTML que el documento está utilizando.-->
+<!DOCTYPE html>
+<!--Abre la etiqueta raíz del documento HTML y especifica el idioma principal del contenido (en este caso, inglés)-->
+<html lang="en">
+<!--Abre la sección de encabezado del documento, donde se colocan metadatos y enlaces a recursos externos.-->
+<head>
+    <!--Especifica el conjunto de caracteres (UTF-8) utilizado para codificar el contenido del documento.-->
+    <meta charset="UTF-8">
+    <!--Define cómo el navegador debe controlar las dimensiones y la escala de la página en diferentes dispositivos-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--Establece el título del documento.-->
+    <title>Pizarra Interactiva con Canvas</title>
+    <!--Define estilos CSS dentro del propio documento HTML. En este caso, establece un borde de 1 píxel sólido negro al elemento <canvas>.-->
+    <style>
+        canvas {
+            border: 1px solid black;
+        }
+    </style>
+    <!--Cierra la sección de encabezado del documento.-->
+</head>
+<!--Abre la sección del cuerpo del documento, donde se coloca el contenido visible del sitio web.-->
+<body>
+    <!--Inserta un elemento <canvas> en el cuerpo del documento con el ID "pizarra".-->
+    <canvas id="pizarra"></canvas>
+    <!--Abre la etiqueta para agregar scripts JavaScript en el documento.-->
+    <script>
+        //======================================================================
+        // VARIABLES
+        //======================================================================
+        /*Declara una variable miCanvas y la asigna al elemento <canvas> con el ID "pizarra".*/
+        let miCanvas = document.querySelector('#pizarra');
+        /*Declara una variable lineas como un array vacío que almacenará las líneas dibujadas.*/
+        let lineas = [];
+        /*Declara una variable lineas como un array vacío que almacenará las líneas dibujadas*/
+        let correccionX = 0;
+        /*Declara variables correccionX y correccionY e inicialízalas en 0.*/
+        let correccionY = 0;
+        // Marca el nuevo punto
+        let nuevaPosicionX = 0;
+        /*Declara variables nuevaPosicionX y nuevaPosicionY e inicialízalas en 0.*/
+        let nuevaPosicionY = 0;
+        /*Obtiene la posición del elemento <canvas> en relación con la ventana gráfica y actualiza las variables correccionX y correccionY con los valores correspondientes.*/
+        let posicion = miCanvas.getBoundingClientRect();
+        correccionX = posicion.x;
+        correccionY = posicion.y;
+        /*Establece el ancho y la altura del elemento <canvas> en 500 píxeles.*/
+        miCanvas.width = 500;
+        miCanvas.height = 500;
+
+        /**
+         * Funcion que empieza a dibujar la linea
+         */
+        function empezarDibujo(event) {
+            lineas.push([]);
+            dibujarLinea(event);
+        }
+
+        /**
+         * Funcion que guarda la posicion de la nueva línea
+         */
+        function guardarLinea() {
+            lineas[lineas.length - 1].push({
+                x: nuevaPosicionX,
+                y: nuevaPosicionY
+            });
+        }
+
+        /**
+         * Funcion dibuja la linea
+         */
+        function dibujarLinea(event) {
+            nuevaPosicionX = event.clientX - correccionX;
+            nuevaPosicionY = event.clientY - correccionY;
+
+            let ctx = miCanvas.getContext('2d');
+            // Estilos de linea
+            ctx.lineJoin = ctx.lineCap = 'round';
+            ctx.lineWidth = 10;
+            // Color de la linea
+            ctx.strokeStyle = 'black';
+
+            // Guarda la línea
+            guardarLinea();
+            // Redibuja todas las líneas guardadas
+            ctx.clearRect(0, 0, miCanvas.width, miCanvas.height);
+            lineas.forEach(function (segmento) {
+                ctx.beginPath();
+                ctx.moveTo(segmento[0].x, segmento[0].y);
+                segmento.forEach(function (punto, index) {
+                    ctx.lineTo(punto.x, punto.y);
+                });
+                ctx.stroke();
+            });
+        }
+
+        //======================================================================
+        // EVENTOS
+        //======================================================================
+
+        // Eventos raton
+        miCanvas.addEventListener('mousemove', empezarDibujo, false);
+    </script>
+</body>
+</html>
